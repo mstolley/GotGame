@@ -1,7 +1,7 @@
-# Thrones API App
+# GotGame
 
 ## Overview
-Thrones API App is a Next.js application that fetches and displays character data from the Thrones API. It provides a user-friendly interface to view information about characters from the popular series.
+GotGame is a Next.js application that fetches and displays character data from the Thrones API. It provides a user-friendly interface to view information about characters from the popular series.
 
 ## Features
 - Fetches character data from the Thrones API.
@@ -17,7 +17,7 @@ Thrones API App is a Next.js application that fetches and displays character dat
 
 2. Navigate to the project directory:
    ```
-   cd thrones-api-app
+   cd GotGame
    ```
 
 3. Install the dependencies:
