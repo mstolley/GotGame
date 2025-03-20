@@ -1,0 +1,22 @@
+.container {
+    padding: 20px;
+    text-align: center;
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.card {
+    width: 300px;
+    padding: 20px;
+    text-align: left;
+}
+
+.image {
+    width: 100%;
+    height: auto;
+}
