@@ -16,6 +16,7 @@ const Home = () => {
     const [data, setData] = useState<Character[] | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
+    const [selectedFamily, setSelectedFamily] = useState<string>('');
 
     console.log('data:', data);
 
@@ -38,6 +39,12 @@ const Home = () => {
         fetchData();
     }, []);
 
+    const handleFamilyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedFamily(event.target.value);
+    };
+
+    const filteredData = data?.filter(character => character.family.includes(selectedFamily));
+
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
 
@@ -46,9 +53,15 @@ const Home = () => {
             <Typography variant="h2" component="h2" gutterBottom>
                 Game of Thrones Characters
             </Typography>
+            <select onChange={handleFamilyChange} value={selectedFamily}>
+                <option value="">All Families</option>
+                {data && Array.from(new Set(data.map(character => character.family))).map(family => (
+                    <option key={family} value={family}>{family}</option>
+                ))}
+            </select>
             {data && data.length > 0 && (
                 <div className={styles.grid}>
-                    {data.map((character) => (
+                    {/* {data.map((character) => (
                         <Card key={character.id} className={styles.card}>
                             <CardContent>
                                 <Typography variant="h5" component="h5">
@@ -63,7 +76,28 @@ const Home = () => {
                                 <img src={character.imageUrl} alt={character.fullName} className={styles.image} />
                             </CardContent>
                         </Card>
-                    ))}
+                    ))} */}
+
+                    {filteredData && filteredData.length > 0 && (
+                        <div className={styles.grid}>
+                            {filteredData.map((character) => (
+                                <Card key={character.id} className={styles.card}>
+                                    <CardContent>
+                                        <Typography variant="h5" component="h5">
+                                            {character.fullName}
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            {character.title}
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            {character.family}
+                                        </Typography>
+                                        <img src={character.imageUrl} alt={character.fullName} className={styles.image} />
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
         </Container>
