@@ -55,29 +55,15 @@ const Home = () => {
             </Typography>
             <select onChange={handleFamilyChange} value={selectedFamily}>
                 <option value="">All Families</option>
-                {data && Array.from(new Set(data.map(character => character.family))).map(family => (
-                    <option key={family} value={family}>{family}</option>
-                ))}
+                {data && Array.from(new Set(data.map(character => character.family)))
+                    .filter(family => family.trim() !== '') // Filter out empty values
+                    .sort((a, b) => a.localeCompare(b)) // Sort alphabetically
+                    .map(family => (
+                        <option key={family} value={family}>{family}</option>
+                    ))}
             </select>
             {data && data.length > 0 && (
                 <div className={styles.grid}>
-                    {/* {data.map((character) => (
-                        <Card key={character.id} className={styles.card}>
-                            <CardContent>
-                                <Typography variant="h5" component="h5">
-                                    {character.fullName}
-                                </Typography>
-                                <Typography variant="body1">
-                                    {character.title}
-                                </Typography>
-                                <Typography variant="body1">
-                                    {character.family}
-                                </Typography>
-                                <img src={character.imageUrl} alt={character.fullName} className={styles.image} />
-                            </CardContent>
-                        </Card>
-                    ))} */}
-
                     {filteredData && filteredData.length > 0 && (
                         <div className={styles.grid}>
                             {filteredData.map((character) => (
