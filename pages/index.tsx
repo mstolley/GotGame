@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Container, Typography, Card, CardContent } from '@mui/material';
 import Link from 'next/link';
-// import { loadFromLocalStorage, saveToLocalStorage } from '../utils/localStorage';
+import { loadFromLocalStorage, saveToLocalStorage } from '../utils/localStorage';
 import styles from '../styles/GotGame.module.css';
 
 const Home = () => {
@@ -15,8 +15,8 @@ const Home = () => {
         imageUrl: string;
     }
 
-    const [data, setData] = useState<Character[] | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [data, setData] = useState<Character[] | null>(loadFromLocalStorage('characters') || null);
+    const [loading, setLoading] = useState(!data);
     const [error, setError] = useState<Error | null>(null);
     const [selectedFamily, setSelectedFamily] = useState<string>('');
 
@@ -29,6 +29,7 @@ const Home = () => {
                 }
                 const result = await response.json();
                 setData(result);
+                saveToLocalStorage('characters', result);
             } catch (error) {
                 setError(error as Error);
             } finally {

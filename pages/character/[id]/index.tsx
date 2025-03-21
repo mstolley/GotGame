@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Container, Typography, Card, CardContent } from '@mui/material';
+import Link from 'next/link';
 import styles from '../../../styles/GotGame.module.css';
 
 const Character = () => {
@@ -44,6 +45,9 @@ const Character = () => {
 
     return (
         <Container className={styles.container}>
+            <div className={styles.headNav}>
+                <Link href={"/"}>Back to Home</Link>
+            </div>
             {character && (
                 <Card className={styles.card}>
                     <CardContent>
