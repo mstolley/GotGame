@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Container, Typography, Card, CardContent } from '@mui/material';
 import Link from 'next/link';
+import { loadFromLocalStorage } from '../../../utils/localStorage'
 import styles from '../../../styles/GotGame.module.css';
 
 const Character = () => {
@@ -9,6 +10,9 @@ const Character = () => {
     const { id } = router.query;
 
     interface Character {
+        id: number;
+        firstName: string;
+        lastName: string;
         fullName: string;
         title: string;
         family: string;
@@ -21,22 +25,31 @@ const Character = () => {
 
     useEffect(() => {
         if (id) {
-            const fetchCharacter = async () => {
-                try {
-                    const response = await fetch(`/api/character/${id}`);
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    const result = await response.json();
-                    setCharacter(result);
-                } catch (error) {
-                    setError(error as Error);
-                } finally {
-                    setLoading(false);
-                }
-            };
+            const storedCharacters = loadFromLocalStorage('characters');
+            const storedCharacter = storedCharacters?.find((char: Character) => char.id === Number(id));
 
-            fetchCharacter();
+            if (storedCharacter) {
+                setCharacter(storedCharacter);
+                setLoading(false);
+            } else {
+                const fetchCharacter = async () => {
+                    try {
+                        const response = await fetch(`/api/character/${id}`);
+
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        const result = await response.json();
+                        setCharacter(result);
+                    } catch (error) {
+                        setError(error as Error);
+                    } finally {
+                        setLoading(false);
+                    }
+                };
+
+                fetchCharacter();
+            }
         }
     }, [id]);
 
@@ -53,6 +66,12 @@ const Character = () => {
                     <CardContent>
                         <Typography variant="h5" component="h5">
                             {character.fullName}
+                        </Typography>
+                        <Typography variant="body1">
+                            <span>First Name:</span> {character.firstName}
+                        </Typography>
+                        <Typography variant="body1">
+                            <span>Last Name:</span> {character.lastName}
                         </Typography>
                         <Typography variant="body1">
                             <span>Title:</span> {character.title}
