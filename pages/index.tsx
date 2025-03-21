@@ -68,17 +68,8 @@ const Home = () => {
                         <Card key={`card_${character.id}`} className={styles.card}>
                             <CardContent>
                                 <Link href={`/character/${character.id}`}>
-                                    <Typography variant="h5" component="h5">
-                                        {character.fullName}
-                                    </Typography>
+                                    <img src={character.imageUrl} alt={character.fullName} className={styles.image} />
                                 </Link>
-                                <Typography variant="body1">
-                                    {character.title}
-                                </Typography>
-                                <Typography variant="body1">
-                                    {character.family}
-                                </Typography>
-                                <img src={character.imageUrl} alt={character.fullName} className={styles.image} />
                             </CardContent>
                         </Card>
                     ))}

@@ -55,10 +55,10 @@ const Character = () => {
                             {character.fullName}
                         </Typography>
                         <Typography variant="body1">
-                            {character.title}
+                            <span>Title:</span> {character.title}
                         </Typography>
                         <Typography variant="body1">
-                            {character.family}
+                            <span>Family:</span> {character.family}
                         </Typography>
                         <img src={character.imageUrl} alt={character.fullName} className={styles.image} />
                     </CardContent>
