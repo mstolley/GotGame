@@ -65,17 +65,21 @@ const Home = () => {
             </div>
             {filteredData && filteredData.length > 0 && (
                 <div className={styles.grid}>
-                    {filteredData.map((character) => (
+                    {filteredData.map((character, i) => (
                         <Card key={`card_${character.id}`} className={styles.card}>
                             <CardContent>
                                 <Link href={`/character/${character.id}`}>
-                                    <Image
-                                        src={character.imageUrl}
-                                        alt={character.fullName}
-                                        className={styles.image}
-                                        width={268}
-                                        height={268}
-                                    />
+                                    <div className={styles.imageContainer}>
+                                        <Image
+                                            priority={i < 3}
+                                            src={character.imageUrl}
+                                            // blurDataURL={character.imageUrl}
+                                            alt={`image_${character.id}`}
+                                            className={styles.image}
+                                            width={268}
+                                            height={268}
+                                        />
+                                    </div>
                                 </Link>
                             </CardContent>
                         </Card>

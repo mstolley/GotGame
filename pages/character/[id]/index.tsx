@@ -80,13 +80,17 @@ const Character = () => {
                         <Typography variant="body1">
                             <span>Family:</span> {character.family}
                         </Typography>
-                        <Image
-                            src={character.imageUrl}
-                            alt={character.fullName}
-                            className={styles.image}
-                            width={268}
-                            height={268}
-                        />
+                        <div className={styles.imageContainer}>
+                            <Image
+                                priority
+                                src={character.imageUrl}
+                                // blurDataURL={character.imageUrl}
+                                alt={`image_${character.id}`}
+                                className={styles.image}
+                                width={268}
+                                height={268}
+                            />
+                        </div>
                     </CardContent>
                 </Card>
             )}
