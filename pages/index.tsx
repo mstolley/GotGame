@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Container, Typography, Card, CardContent } from '@mui/material';
+import { Container, Card, CardContent } from '@mui/material';
+import Image from 'next/image';
 import Link from 'next/link';
 import { loadFromLocalStorage, saveToLocalStorage } from '../utils/localStorage';
 import styles from '../styles/GotGame.module.css';
@@ -68,7 +69,13 @@ const Home = () => {
                         <Card key={`card_${character.id}`} className={styles.card}>
                             <CardContent>
                                 <Link href={`/character/${character.id}`}>
-                                    <img src={character.imageUrl} alt={character.fullName} className={styles.image} />
+                                    <Image
+                                        src={character.imageUrl}
+                                        alt={character.fullName}
+                                        className={styles.image}
+                                        width={268}
+                                        height={268}
+                                    />
                                 </Link>
                             </CardContent>
                         </Card>

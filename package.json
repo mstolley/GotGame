@@ -1,12 +1,13 @@
 {
-  "name": "thrones-api-app",
+  "name": "gotgame",
   "version": "1.0.0",
   "description": "A Next.js app that fetches and displays character data from the Thrones API.",
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",
@@ -22,6 +23,8 @@
   "devDependencies": {
     "@types/node": "latest",
     "@types/react": "latest",
+    "eslint": "^9.22.0",
+    "eslint-config-next": "^15.2.3",
     "typescript": "latest"
   },
   "license": "MIT"

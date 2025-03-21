@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Container, Typography, Card, CardContent } from '@mui/material';
+import Image from 'next/image';
 import Link from 'next/link';
 import { loadFromLocalStorage } from '../../../utils/localStorage'
 import styles from '../../../styles/GotGame.module.css';
@@ -79,7 +80,13 @@ const Character = () => {
                         <Typography variant="body1">
                             <span>Family:</span> {character.family}
                         </Typography>
-                        <img src={character.imageUrl} alt={character.fullName} className={styles.image} />
+                        <Image
+                            src={character.imageUrl}
+                            alt={character.fullName}
+                            className={styles.image}
+                            width={268}
+                            height={268}
+                        />
                     </CardContent>
                 </Card>
             )}
