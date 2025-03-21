@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Container, Typography, Card, CardContent } from '@mui/material';
+import Link from 'next/link';
 import styles from '../styles/Home.module.css';
 
 const Home = () => {
@@ -17,8 +18,6 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
     const [selectedFamily, setSelectedFamily] = useState<string>('');
-
-    console.log('data:', data);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,40 +49,37 @@ const Home = () => {
 
     return (
         <Container className={styles.container}>
-            <Typography variant="h2" component="h2" gutterBottom>
-                Game of Thrones Characters
-            </Typography>
-            <select onChange={handleFamilyChange} value={selectedFamily}>
-                <option value="">All Families</option>
-                {data && Array.from(new Set(data.map(character => character.family)))
-                    .filter(family => family.trim() !== '') // Filter out empty values
-                    .sort((a, b) => a.localeCompare(b)) // Sort alphabetically
-                    .map(family => (
-                        <option key={family} value={family}>{family}</option>
-                    ))}
-            </select>
-            {data && data.length > 0 && (
+            <div className={styles.selectContainer}>
+                <select onChange={handleFamilyChange} value={selectedFamily} name='family' id='family' className={styles.select}>
+                    <option value="">All Families</option>
+                    {data && Array.from(new Set(data.map(character => character.family)))
+                        .filter(family => family.trim() !== '') // Filter out empty values
+                        .sort((a, b) => a.localeCompare(b)) // Sort alphabetically
+                        .map(family => (
+                            <option key={family} value={family}>{family}</option>
+                        ))}
+                </select>
+            </div>
+            {filteredData && filteredData.length > 0 && (
                 <div className={styles.grid}>
-                    {filteredData && filteredData.length > 0 && (
-                        <div className={styles.grid}>
-                            {filteredData.map((character) => (
-                                <Card key={character.id} className={styles.card}>
-                                    <CardContent>
-                                        <Typography variant="h5" component="h5">
-                                            {character.fullName}
-                                        </Typography>
-                                        <Typography variant="body1">
-                                            {character.title}
-                                        </Typography>
-                                        <Typography variant="body1">
-                                            {character.family}
-                                        </Typography>
-                                        <img src={character.imageUrl} alt={character.fullName} className={styles.image} />
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
-                    )}
+                    {filteredData.map((character) => (
+                        <Card key={`card_${character.id}`} className={styles.card}>
+                            <CardContent>
+                                <Link href={`/character/${character.id}`}>
+                                    <Typography variant="h5" component="h5">
+                                        {character.fullName}
+                                    </Typography>
+                                </Link>
+                                <Typography variant="body1">
+                                    {character.title}
+                                </Typography>
+                                <Typography variant="body1">
+                                    {character.family}
+                                </Typography>
+                                <img src={character.imageUrl} alt={character.fullName} className={styles.image} />
+                            </CardContent>
+                        </Card>
+                    ))}
                 </div>
             )}
         </Container>
