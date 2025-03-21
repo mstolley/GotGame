@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Container, Typography, Card, CardContent } from '@mui/material';
-import styles from '../../../styles/Home.module.css';
+import styles from '../../../styles/GotGame.module.css';
 
 const Character = () => {
     const router = useRouter();

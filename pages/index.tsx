@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Container, Typography, Card, CardContent } from '@mui/material';
 import Link from 'next/link';
-import styles from '../styles/Home.module.css';
+// import { loadFromLocalStorage, saveToLocalStorage } from '../utils/localStorage';
+import styles from '../styles/GotGame.module.css';
 
 const Home = () => {
     interface Character {
