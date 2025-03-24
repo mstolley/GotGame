@@ -32,10 +32,13 @@ const Home = () => {
         const fetchData = async () => {
             try {
                 const response = await fetch('/api');
+
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
+
                 const result = await response.json();
+
                 setData(result);
                 saveToLocalStorage('characters', result);
             } catch (error) {
@@ -56,10 +59,12 @@ const Home = () => {
 
     return (
         <Container className={styles.container}>
-            {isClient && !isLoading ? (
+            {!isClient || isLoading ? (
+                <div>Loading...</div>
+            ) : (
                 <>
                     <div className={styles.selectContainer}>
-                        <select onChange={handleFamilyChange} value={selectedFamily} name='family' id='family' className={styles.select}>
+                        <select value={selectedFamily} name='family' id='family' onChange={handleFamilyChange}>
                             <option value="">All Families</option>
                             {data && Array.from(new Set(data.map(character => character.family)))
                                 .filter(family => family.trim() !== '') // Filter out empty values
@@ -73,7 +78,10 @@ const Home = () => {
                         {filteredData && filteredData.length > 0 && (
                             <div className={styles.grid}>
                                 {filteredData.map((character) => (
-                                    <Card key={`card_${character.id}`} className={styles.card}>
+                                    <Card
+                                        key={`card_${character.id}`}
+                                        className={styles.card}
+                                    >
                                         <CardContent>
                                             <Link href={`/character/${character.id}`}>
                                                 <div className={styles.imageContainer}>
@@ -95,8 +103,6 @@ const Home = () => {
                         )}
                     </div>
                 </>
-            ) : (
-                <div>Loading...</div>
             )}
         </Container>
     );

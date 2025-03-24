@@ -6,10 +6,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     try {
         const response = await fetch(url);
+
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
+
         const data = await response.json();
+
         res.status(200).json(data);
     } catch (error) {
         if (error instanceof Error) {

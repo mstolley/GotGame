@@ -9,6 +9,7 @@ import styles from '../../../styles/GotGame.module.css';
 const Character = () => {
     const router = useRouter();
     const { id } = router.query;
+
     interface Character {
         id: number;
         firstName: string;
@@ -39,7 +40,9 @@ const Character = () => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
                         }
+
                         const result = await response.json();
+
                         setCharacter(result);
                     } catch (error) {
                         setError(error as Error);
