@@ -3,6 +3,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+    // Note: Get the initial data from the JSON /data/data.json file
     const jsonDirectory = path.join(process.cwd(), 'data');
     const fileContents = await fs.readFile(path.join(jsonDirectory, 'data.json'), 'utf8');
 
