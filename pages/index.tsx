@@ -16,8 +16,9 @@ const Home = () => {
         imageUrl: string;
     }
 
+    const [isClient, setIsClient] = useState(false);
     const [data, setData] = useState<Character[] | null>(loadFromLocalStorage('characters') || null);
-    const [loading, setLoading] = useState(!data);
+    const [isLoading, setIsLoading] = useState(!data);
     const [error, setError] = useState<Error | null>(null);
     const [selectedFamily, setSelectedFamily] = useState<string>('');
 
@@ -40,51 +41,63 @@ const Home = () => {
             } catch (error) {
                 setError(error as Error);
             } finally {
-                setLoading(false);
+                setIsLoading(false);
             }
         };
 
         fetchData();
     }, []);
 
-    if (loading) return <div>Loading...</div>;
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    // if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
 
     return (
         <Container className={styles.container}>
-            <div className={styles.selectContainer}>
-                <select onChange={handleFamilyChange} value={selectedFamily} name='family' id='family' className={styles.select}>
-                    <option value="">All Families</option>
-                    {data && Array.from(new Set(data.map(character => character.family)))
-                        .filter(family => family.trim() !== '') // Filter out empty values
-                        .sort((a, b) => a.localeCompare(b)) // Sort alphabetically
-                        .map(family => (
-                            <option key={family} value={family}>{family}</option>
-                        ))}
-                </select>
-            </div>
-            {filteredData && filteredData.length > 0 && (
-                <div className={styles.grid}>
-                    {filteredData.map((character) => (
-                        <Card key={`card_${character.id}`} className={styles.card}>
-                            <CardContent>
-                                <Link href={`/character/${character.id}`}>
-                                    <div className={styles.imageContainer}>
-                                        <Image
-                                            priority
-                                            src={character.imageUrl}
-                                            blurDataURL={character.imageUrl}
-                                            alt={`image_${character.id}`}
-                                            className={styles.image}
-                                            width={268}
-                                            height={268}
-                                        />
-                                    </div>
-                                </Link>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
+            {isClient && !isLoading ? (
+                <>
+                    <div className={styles.selectContainer}>
+                        <select onChange={handleFamilyChange} value={selectedFamily} name='family' id='family' className={styles.select}>
+                            <option value="">All Families</option>
+                            {data && Array.from(new Set(data.map(character => character.family)))
+                                .filter(family => family.trim() !== '') // Filter out empty values
+                                .sort((a, b) => a.localeCompare(b)) // Sort alphabetically
+                                .map(family => (
+                                    <option key={family} value={family}>{family}</option>
+                                ))}
+                        </select>
+                    </div>
+                    <div>
+                        {filteredData && filteredData.length > 0 && (
+                            <div className={styles.grid}>
+                                {filteredData.map((character) => (
+                                    <Card key={`card_${character.id}`} className={styles.card}>
+                                        <CardContent>
+                                            <Link href={`/character/${character.id}`}>
+                                                <div className={styles.imageContainer}>
+                                                    <Image
+                                                        priority
+                                                        src={character.imageUrl}
+                                                        blurDataURL={character.imageUrl}
+                                                        alt={`image_${character.id}`}
+                                                        className={styles.image}
+                                                        width={268}
+                                                        height={268}
+                                                    />
+                                                </div>
+                                            </Link>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </>
+            ) : (
+                <div>DONGLORD...</div>
             )}
         </Container>
     );
