@@ -52,7 +52,6 @@ const Home = () => {
         setIsClient(true);
     }, []);
 
-    // if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
 
     return (
@@ -97,7 +96,7 @@ const Home = () => {
                     </div>
                 </>
             ) : (
-                <div>DONGLORD...</div>
+                <div>Loading...</div>
             )}
         </Container>
     );
