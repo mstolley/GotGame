@@ -61,7 +61,7 @@ const Character = () => {
     return (
         <Container className={styles.container}>
             {isLoading ? (
-                <div>Loading...</div>
+                <div className={styles.loader}>Loading...</div>
             ) : (
                 <>
                     <div className={styles.headNav}>

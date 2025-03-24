@@ -16,8 +16,10 @@ const Home = () => {
         imageUrl: string;
     }
 
+    const localCharacters = loadFromLocalStorage('characters') as Character[] || null;
+
     const [isClient, setIsClient] = useState(false);
-    const [data, setData] = useState<Character[] | null>(loadFromLocalStorage('characters') || null);
+    const [data, setData] = useState<Character[] | null>(localCharacters);
     const [isLoading, setIsLoading] = useState(!data);
     const [error, setError] = useState<Error | null>(null);
     const [selectedFamily, setSelectedFamily] = useState<string>('');
@@ -48,8 +50,8 @@ const Home = () => {
             }
         };
 
-        fetchData();
-    }, []);
+        localCharacters === null && fetchData();
+    }, [localCharacters]);
 
     useEffect(() => {
         setIsClient(true);
@@ -60,7 +62,7 @@ const Home = () => {
     return (
         <Container className={styles.container}>
             {!isClient || isLoading ? (
-                <div>Loading...</div>
+                <div className={styles.loader}>Loading...</div>
             ) : (
                 <>
                     <div className={styles.selectContainer}>
