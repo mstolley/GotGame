@@ -5,8 +5,8 @@
             "error",
             {
                 "blankLine": "always",
-                "prev": "*",
-                "next": "return"
+                "prev": "return",
+                "next": "*"
             },
             {
                 "blankLine": "always",

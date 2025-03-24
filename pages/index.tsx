@@ -21,12 +21,23 @@ const Home = () => {
     const [isLoading, setIsLoading] = useState(!data);
     const [error, setError] = useState<Error | null>(null);
     const [selectedFamily, setSelectedFamily] = useState<string>('');
+    const [visibleCards, setVisibleCards] = useState<number>(0);
 
     const handleFamilyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedFamily(event.target.value);
     };
 
     const filteredData = data?.filter(character => character.family.includes(selectedFamily));
+
+    useEffect(() => {
+        if (filteredData && visibleCards < filteredData.length) {
+            const timer = setTimeout(() => {
+                setVisibleCards(visibleCards + 1);
+            }, 200); // Adjust the delay as needed
+
+            return () => clearTimeout(timer);
+        }
+    }, [filteredData, visibleCards]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -77,7 +88,7 @@ const Home = () => {
                     <div>
                         {filteredData && filteredData.length > 0 && (
                             <div className={styles.grid}>
-                                {filteredData.map((character) => (
+                                {filteredData.slice(0, visibleCards).map((character) => (
                                     <Card
                                         key={`card_${character.id}`}
                                         className={styles.card}
