@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+// Note: This is currently obsolete as we are simply using localStorage to query for now
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { id } = req.query;
     const url = `https://thronesapi.com/api/v2/Characters/${id}`;

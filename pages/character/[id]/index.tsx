@@ -21,7 +21,7 @@ const Character = () => {
     }
 
     const [character, setCharacter] = useState<Character | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
@@ -31,7 +31,7 @@ const Character = () => {
 
             if (storedCharacter) {
                 setCharacter(storedCharacter);
-                setLoading(false);
+                setIsLoading(false);
             } else {
                 const fetchCharacter = async () => {
                     try {
@@ -47,7 +47,7 @@ const Character = () => {
                     } catch (error) {
                         setError(error as Error);
                     } finally {
-                        setLoading(false);
+                        setIsLoading(false);
                     }
                 };
 
@@ -56,45 +56,50 @@ const Character = () => {
         }
     }, [id]);
 
-    if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
 
     return (
         <Container className={styles.container}>
-            <div className={styles.headNav}>
-                <Link href={"/"}>Back to Home</Link>
-            </div>
-            {character && (
-                <Card className={styles.card}>
-                    <CardContent>
-                        <Typography variant="h5" component="h5">
-                            {character.fullName}
-                        </Typography>
-                        <Typography variant="body1">
-                            <span>First Name:</span> {character.firstName}
-                        </Typography>
-                        <Typography variant="body1">
-                            <span>Last Name:</span> {character.lastName}
-                        </Typography>
-                        <Typography variant="body1">
-                            <span>Title:</span> {character.title}
-                        </Typography>
-                        <Typography variant="body1">
-                            <span>Family:</span> {character.family}
-                        </Typography>
-                        <div className={styles.imageContainer}>
-                            <Image
-                                priority
-                                src={character.imageUrl}
-                                blurDataURL={character.imageUrl}
-                                alt={`image_${character.id}`}
-                                className={styles.image}
-                                width={268}
-                                height={268}
-                            />
-                        </div>
-                    </CardContent>
-                </Card>
+            {isLoading ? (
+                <div>Loading...</div>
+            ) : (
+                <>
+                    <div className={styles.headNav}>
+                        <Link href={"/"}>Back to Home</Link>
+                    </div>
+                    {character && (
+                        <Card className={styles.card}>
+                            <CardContent>
+                                <Typography variant="h5" component="h5">
+                                    {character.fullName}
+                                </Typography>
+                                <Typography variant="body1">
+                                    <span>First Name:</span> {character.firstName}
+                                </Typography>
+                                <Typography variant="body1">
+                                    <span>Last Name:</span> {character.lastName}
+                                </Typography>
+                                <Typography variant="body1">
+                                    <span>Title:</span> {character.title}
+                                </Typography>
+                                <Typography variant="body1">
+                                    <span>Family:</span> {character.family}
+                                </Typography>
+                                <div className={styles.imageContainer}>
+                                    <Image
+                                        priority
+                                        src={character.imageUrl}
+                                        blurDataURL={character.imageUrl}
+                                        alt={`image_${character.id}`}
+                                        className={styles.image}
+                                        width={268}
+                                        height={268}
+                                    />
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+                </>
             )}
         </Container>
     );
