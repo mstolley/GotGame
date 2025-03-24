@@ -9,7 +9,6 @@ import styles from '../../../styles/GotGame.module.css';
 const Character = () => {
     const router = useRouter();
     const { id } = router.query;
-
     interface Character {
         id: number;
         firstName: string;
@@ -84,7 +83,7 @@ const Character = () => {
                             <Image
                                 priority
                                 src={character.imageUrl}
-                                // blurDataURL={character.imageUrl}
+                                blurDataURL={character.imageUrl}
                                 alt={`image_${character.id}`}
                                 className={styles.image}
                                 width={268}

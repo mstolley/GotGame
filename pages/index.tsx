@@ -21,6 +21,12 @@ const Home = () => {
     const [error, setError] = useState<Error | null>(null);
     const [selectedFamily, setSelectedFamily] = useState<string>('');
 
+    const handleFamilyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedFamily(event.target.value);
+    };
+
+    const filteredData = data?.filter(character => character.family.includes(selectedFamily));
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -41,12 +47,6 @@ const Home = () => {
         fetchData();
     }, []);
 
-    const handleFamilyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedFamily(event.target.value);
-    };
-
-    const filteredData = data?.filter(character => character.family.includes(selectedFamily));
-
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
 
@@ -65,15 +65,15 @@ const Home = () => {
             </div>
             {filteredData && filteredData.length > 0 && (
                 <div className={styles.grid}>
-                    {filteredData.map((character, i) => (
+                    {filteredData.map((character) => (
                         <Card key={`card_${character.id}`} className={styles.card}>
                             <CardContent>
                                 <Link href={`/character/${character.id}`}>
                                     <div className={styles.imageContainer}>
                                         <Image
-                                            priority={i < 3}
+                                            priority
                                             src={character.imageUrl}
-                                            // blurDataURL={character.imageUrl}
+                                            blurDataURL={character.imageUrl}
                                             alt={`image_${character.id}`}
                                             className={styles.image}
                                             width={268}
