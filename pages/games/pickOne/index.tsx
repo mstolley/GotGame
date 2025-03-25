@@ -8,6 +8,7 @@ import { getRandomKey } from '../../../utils/getRandomKey';
 import { Header } from '../../../components/Header';
 import { Navigation } from '../../../components/Navigation';
 import styles from '../../../styles/GotGame.module.css';
+import { getLegibleKey } from '../../../utils/getLegibleKey';
 
 const PickOne = () => {
     const localCharacters = useMemo(() => {
@@ -26,13 +27,22 @@ const PickOne = () => {
             const shuffledCharacters = shuffleArray(localCharacters);
             const selectedCharacters = shuffledCharacters?.slice(0, 4);
             const randomKey = memoizedGetRandomKey(localCharacters[0]);
+            const legibleKey = getLegibleKey(randomKey);
             const winner = selectedCharacters?.find((char: Character) => char[randomKey] !== undefined && char[randomKey] !== null);
+            const winnerValue = winner ? winner[randomKey] : null;
+
+            let question = null;
 
             selectedCharacters && setGameCharacters(selectedCharacters);
-            if (randomKey && winner) {
-                setQuestion(`Which character has a ${randomKey} of ${winner[randomKey]}?`);
-            }
             winner && setWinner(winner);
+
+            if (randomKey && legibleKey && winnerValue) {
+                question = winnerValue !== null && winnerValue !== 'None'
+                    ? `Which character has a ${legibleKey} of ${winnerValue}?`
+                    : `Which character has no ${legibleKey}?`;
+
+                setQuestion(question);
+            }
         } else {
             setError(new Error('Characters not found'));
         }
