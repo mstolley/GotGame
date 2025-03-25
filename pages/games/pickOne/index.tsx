@@ -22,7 +22,9 @@ const PickOne = () => {
 
     const memoizedGetRandomKey = useCallback((getRandomKey), []);
 
-    useEffect(() => {
+    const launchRound = useCallback(() => {
+        setIsLoading(true);
+
         if (localCharacters && localCharacters.length >= 4) {
             const shuffledCharacters = shuffleArray(localCharacters);
             const selectedCharacters = shuffledCharacters?.slice(0, 4);
@@ -36,7 +38,7 @@ const PickOne = () => {
             selectedCharacters && setGameCharacters(selectedCharacters);
             winner && setWinner(winner);
 
-            if (randomKey && legibleKey && winnerValue) {
+            if (legibleKey && winnerValue) {
                 question = winnerValue !== null && winnerValue !== 'None'
                     ? `Which character has a ${legibleKey} of ${winnerValue}?`
                     : `Which character has no ${legibleKey}?`;
@@ -49,6 +51,10 @@ const PickOne = () => {
 
         setIsLoading(false);
     }, [localCharacters, memoizedGetRandomKey]);
+
+    useEffect(() => {
+        launchRound();
+    }, [launchRound]);
 
     useEffect(() => {
         winner && console.log(winner);
