@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Container, Card, CardContent, Typography } from '@mui/material';
+import { Container, Card, CardContent, Typography, Button } from '@mui/material';
 import Image from 'next/image';
 import { Character } from '../../../interfaces/Character';
-import { loadFromLocalStorage } from '../../../utils/localStorage';
+import { loadFromLocalStorage, saveToLocalStorage } from '../../../utils/localStorage';
 import { shuffleArray } from '../../../utils/shuffleArray';
 import { getRandomKey } from '../../../utils/getRandomKey';
 import { Header } from '../../../components/Header';
@@ -14,13 +14,34 @@ const PickOne = () => {
     const localCharacters = useMemo(() => {
         return loadFromLocalStorage('characters') as Character[] || null;
     }, []);
+    const [data, setData] = useState<Character[] | null>(localCharacters);
     const [gameCharacters, setGameCharacters] = useState<Character[] | null>(null);
     const [winner, setWinner] = useState<Character | null>(null);
     const [question, setQuestion] = useState<string | null>(null);
+    const [showLaunchButton, setShowLaunchButton] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
     const memoizedGetRandomKey = useCallback((getRandomKey), []);
+
+    const fetchData = async () => {
+        try {
+            const response = await fetch('/api');
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const result = await response.json();
+
+            setData(result);
+            saveToLocalStorage('characters', result);
+        } catch (error) {
+            setError(error as Error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const launchRound = useCallback(() => {
         setIsLoading(true);
@@ -58,6 +79,10 @@ const PickOne = () => {
         winner && console.log(winner);
     }, [winner]);
 
+    useEffect(() => {
+        localCharacters === null && fetchData();
+    }, [localCharacters]);
+
     if (error) return <div>Error: {error.message}</div>;
 
     return (
@@ -67,6 +92,11 @@ const PickOne = () => {
                 <div className={styles.loader}>Loading...</div>
             ) : (
                 <>
+                    {showLaunchButton && (
+                        <div className={styles.buttonContainer}>
+                            <Button className={styles.button} onClick={launchRound}>Launch</Button>
+                        </div>
+                    )}
                     {gameCharacters && gameCharacters.length > 3 && (
                         <>
                             {question && (

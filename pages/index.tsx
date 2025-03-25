@@ -1,143 +1,130 @@
-import { useEffect, useMemo, useState } from 'react';
-import {
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
-    Container,
-    Card,
-    CardContent,
-    NoSsr,
-    Typography
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Container, Card, CardContent, Typography, Button } from '@mui/material';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Character } from '../interfaces/Character';
 import { loadFromLocalStorage, saveToLocalStorage } from '../utils/localStorage';
+import { shuffleArray } from '../utils/shuffleArray';
+import { getRandomKey } from '../utils/getRandomKey';
 import { Header } from '../components/Header';
+import { Navigation } from '../components/Navigation';
 import styles from '../styles/GotGame.module.css';
+import { getLegibleKey } from '../utils/getLegibleKey';
 
-const Home = () => {
+const GotGame = () => {
     const localCharacters = useMemo(() => {
         return loadFromLocalStorage('characters') as Character[] || null;
     }, []);
-
-    const [isClient, setIsClient] = useState(false);
-    const [data, setData] = useState<Character[] | null>(localCharacters);
-    const [isLoading, setIsLoading] = useState(!data);
+    const [gameCharacters, setGameCharacters] = useState<Character[] | null>(null);
+    const [winner, setWinner] = useState<Character | null>(null);
+    const [question, setQuestion] = useState<string | null>(null);
+    const [showLaunchButton, setShowLaunchButton] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
-    const [selectedFamily, setSelectedFamily] = useState<string>('');
 
-    const handleFamilyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedFamily(event.target.value);
+    const memoizedGetRandomKey = useCallback((getRandomKey), []);
+
+    const fetchData = async () => {
+        try {
+            const response = await fetch('/api');
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const result = await response.json();
+
+            saveToLocalStorage('characters', result);
+        } catch (error) {
+            setError(error as Error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const filteredData = data?.filter(character => character.family.includes(selectedFamily));
+    const launchRound = useCallback(() => {
+        console.log('launchRound');
+        setIsLoading(true);
+
+        if (localCharacters && localCharacters.length >= 4) {
+            const shuffledCharacters = shuffleArray(localCharacters);
+            const selectedCharacters = shuffledCharacters?.slice(0, 4);
+            const randomKey = memoizedGetRandomKey(localCharacters[0]);
+            const legibleKey = getLegibleKey(randomKey);
+            const winner = selectedCharacters?.find((char: Character) => char[randomKey] !== undefined && char[randomKey] !== null);
+            const winnerValue = winner ? winner[randomKey] : null;
+
+            let question = null;
+
+            selectedCharacters && setGameCharacters(selectedCharacters);
+            winner && setWinner(winner);
+
+            question = winnerValue !== null && winnerValue !== 'None'
+                ? `Which character has a ${legibleKey} of ${winnerValue}?`
+                : `Which character has no ${legibleKey}?`;
+
+            setQuestion(question);
+        } else {
+            // localCharacters === null ? fetchData() : setError(new Error('Characters not found'));
+            fetchData();
+        }
+
+        setIsLoading(false);
+    }, [localCharacters, memoizedGetRandomKey]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch('/api');
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const result = await response.json();
-
-                setData(result);
-                saveToLocalStorage('characters', result);
-            } catch (error) {
-                setError(error as Error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        localCharacters === null && fetchData();
-    }, [localCharacters]);
+        launchRound();
+    }, [launchRound]);
 
     useEffect(() => {
-        setIsClient(true);
-    }, []);
+        winner && console.log(winner);
+    }, [winner]);
 
     if (error) return <div>Error: {error.message}</div>;
 
     return (
         <Container className={styles.container}>
             <Header />
-            {!isClient || isLoading ? (
+            {isLoading ? (
                 <div className={styles.loader}>Loading...</div>
             ) : (
                 <>
-                    <Accordion>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="characters-content"
-                            id="characters-header"
-                        >
-                            <Typography variant="h5" component="h5">Characters</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <div className={styles.selectContainer}>
-                                <select value={selectedFamily} name='family' id='family' onChange={handleFamilyChange}>
-                                    <option value="">All Families</option>
-                                    {data && Array.from(new Set(data.map(character => character.family)))
-                                        .filter(family => family.trim() !== '') // Filter out empty values
-                                        .sort((a, b) => a.localeCompare(b)) // Sort alphabetically
-                                        .map(family => (
-                                            <option key={family} value={family}>{family}</option>
-                                        ))}
-                                </select>
+                    {showLaunchButton && (
+                        <div className={styles.buttonContainer}>
+                            <Button className={styles.button} onClick={launchRound}>Start</Button>
+                        </div>
+                    )}
+                    {gameCharacters && gameCharacters.length > 3 && (
+                        <>
+                            {question && (
+                                <div className={styles.question}>
+                                    <Typography component='h5' variant='h5'>{question}</Typography>
+                                </div>
+                            )}
+                            <div className={styles.grid}>
+                                {gameCharacters && gameCharacters.map(character => (
+                                    <Card key={character.id} className={styles.card}>
+                                        <CardContent>
+                                            <div className={styles.imageContainer}>
+                                                <Image
+                                                    priority
+                                                    src={character.imageUrl}
+                                                    blurDataURL={character.imageUrl}
+                                                    alt={`image_${character.id}`}
+                                                    className={styles.image}
+                                                    width={268}
+                                                    height={268}
+                                                />
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                ))}
                             </div>
-                            <div>
-                                {filteredData && filteredData.length > 0 && (
-                                    <div className={styles.grid}>
-                                        {filteredData.map((character) => (
-                                            <Card
-                                                key={`card_${character.id}`}
-                                                className={styles.card}
-                                            >
-                                                <CardContent>
-                                                    <Link href={`/character/${character.id}`}>
-                                                        <div className={styles.imageContainer}>
-                                                            <Image
-                                                                priority
-                                                                src={character.imageUrl}
-                                                                blurDataURL={character.imageUrl}
-                                                                alt={`image_${character.id}`}
-                                                                className={styles.image}
-                                                                width={268}
-                                                                height={268}
-                                                            />
-                                                        </div>
-                                                    </Link>
-                                                </CardContent>
-                                            </Card>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </AccordionDetails>
-                    </Accordion>
-                    <Accordion>
-                        <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls="games-content"
-                            id="games-header"
-                        >
-                            <Typography variant="h5" component="h5">Games</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <div className={styles.gameDetails}>
-                                <Link href={'/games/pickOne'}>Pick 1 Game</Link>
-                            </div>
-                        </AccordionDetails>
-                    </Accordion>
+                        </>
+                    )}
                 </>
             )}
         </Container>
     );
 };
 
-export default Home;
+export default GotGame;
