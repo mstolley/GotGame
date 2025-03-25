@@ -12,21 +12,12 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Character } from '../interfaces/Character';
 import { loadFromLocalStorage, saveToLocalStorage } from '../utils/localStorage';
 import { Header } from '../components/Header';
 import styles from '../styles/GotGame.module.css';
 
 const Home = () => {
-    interface Character {
-        id: number;
-        firstName: string;
-        lastName: string;
-        fullName: string;
-        title: string;
-        family: string;
-        imageUrl: string;
-    }
-
     const localCharacters = useMemo(() => {
         return loadFromLocalStorage('characters') as Character[] || null;
     }, []);

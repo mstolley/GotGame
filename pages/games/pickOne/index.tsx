@@ -1,23 +1,15 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Container, Card, CardContent } from '@mui/material';
 import Image from 'next/image';
+import { Character } from '../../../interfaces/Character';
 import { loadFromLocalStorage } from '../../../utils/localStorage';
 import { shuffleArray } from '../../../utils/shuffleArray';
-import styles from '../../../styles/GotGame.module.css';
+import { getRandomKey } from '../../../utils/getRandomKey';
 import { Header } from '../../../components/Header';
 import { Navigation } from '../../../components/Navigation';
+import styles from '../../../styles/GotGame.module.css';
 
 const PickOne = () => {
-    interface Character {
-        id: number;
-        firstName: string;
-        lastName: string;
-        fullName: string;
-        title: string;
-        family: string;
-        imageUrl: string;
-    }
-
     const localCharacters = useMemo(() => {
         return loadFromLocalStorage('characters') as Character[] || null;
     }, []);
@@ -25,18 +17,15 @@ const PickOne = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
+    const memoizedGetRandomKey = useCallback((getRandomKey), []);
+
     useEffect(() => {
         if (localCharacters && localCharacters.length >= 4) {
             const shuffledCharacters = shuffleArray(localCharacters);
             const selectedCharacters = shuffledCharacters.slice(0, 4);
+            const randomKey = memoizedGetRandomKey(localCharacters[0]);
 
-            // // Ensure one of the character values is unique
-            // if (selectedCharacters.length > 0) {
-            //     selectedCharacters[0] = {
-            //         ...selectedCharacters[0],
-            //         firstName: 'Arya' // Replace 'uniqueValue' with the actual unique value
-            //     };
-            // }
+            randomKey && console.log(randomKey);
 
             setGameCharacters(selectedCharacters);
         } else {
@@ -44,7 +33,7 @@ const PickOne = () => {
         }
 
         setIsLoading(false);
-    }, [localCharacters]);
+    }, [localCharacters, memoizedGetRandomKey]);
 
     useEffect(() => {
         gameCharacters && console.log(gameCharacters);

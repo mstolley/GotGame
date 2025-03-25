@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Container, Typography, Card, CardContent } from '@mui/material';
 import Image from 'next/image';
+import type { Character } from '../../../interfaces/Character';
 import { loadFromLocalStorage } from '../../../utils/localStorage';
 import styles from '../../../styles/GotGame.module.css';
 import { Header } from '../../../components/Header';
@@ -10,16 +11,6 @@ import { Navigation } from '../../../components/Navigation';
 const Character = () => {
     const router = useRouter();
     const { id } = router.query;
-
-    interface Character {
-        id: number;
-        firstName: string;
-        lastName: string;
-        fullName: string;
-        title: string;
-        family: string;
-        imageUrl: string;
-    }
 
     const [character, setCharacter] = useState<Character | null>(null);
     const [isLoading, setIsLoading] = useState(true);
