@@ -47,6 +47,10 @@ const PickOne = () => {
         setIsLoading(false);
     }, [localCharacters]);
 
+    useEffect(() => {
+        gameCharacters && console.log(gameCharacters);
+    }, [gameCharacters]);
+
     if (error) return <div>Error: {error.message}</div>;
 
     return (
