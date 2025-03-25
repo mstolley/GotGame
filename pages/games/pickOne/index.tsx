@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Container, Card, CardContent } from '@mui/material';
+import { Container, Card, CardContent, Typography } from '@mui/material';
 import Image from 'next/image';
 import { Character } from '../../../interfaces/Character';
 import { loadFromLocalStorage } from '../../../utils/localStorage';
@@ -15,6 +15,7 @@ const PickOne = () => {
     }, []);
     const [gameCharacters, setGameCharacters] = useState<Character[] | null>(null);
     const [winner, setWinner] = useState<Character | null>(null);
+    const [question, setQuestion] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
@@ -23,11 +24,14 @@ const PickOne = () => {
     useEffect(() => {
         if (localCharacters && localCharacters.length >= 4) {
             const shuffledCharacters = shuffleArray(localCharacters);
-            const selectedCharacters = shuffledCharacters.slice(0, 4);
+            const selectedCharacters = shuffledCharacters?.slice(0, 4);
             const randomKey = memoizedGetRandomKey(localCharacters[0]);
             const winner = selectedCharacters?.find((char: Character) => char[randomKey] !== undefined && char[randomKey] !== null);
 
-            selectedCharacters.length === 4 && setGameCharacters(selectedCharacters);
+            selectedCharacters && setGameCharacters(selectedCharacters);
+            if (randomKey && winner) {
+                setQuestion(`Which character has a ${randomKey} of ${winner[randomKey]}?`);
+            }
             winner && setWinner(winner);
         } else {
             setError(new Error('Characters not found'));
@@ -35,10 +39,6 @@ const PickOne = () => {
 
         setIsLoading(false);
     }, [localCharacters, memoizedGetRandomKey]);
-
-    useEffect(() => {
-        gameCharacters && console.log(gameCharacters);
-    }, [gameCharacters]);
 
     useEffect(() => {
         winner && console.log(winner);
@@ -55,25 +55,32 @@ const PickOne = () => {
                 <>
                     <Navigation />
                     {gameCharacters && gameCharacters.length > 3 && (
-                        <div className={styles.grid}>
-                            {gameCharacters && gameCharacters.map(character => (
-                                <Card key={character.id} className={styles.card}>
-                                    <CardContent>
-                                        <div className={styles.imageContainer}>
-                                            <Image
-                                                priority
-                                                src={character.imageUrl}
-                                                blurDataURL={character.imageUrl}
-                                                alt={`image_${character.id}`}
-                                                className={styles.image}
-                                                width={268}
-                                                height={268}
-                                            />
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
+                        <>
+                            {question && (
+                                <div className={styles.question}>
+                                    <Typography component='h5' variant='h5'>{question}</Typography>
+                                </div>
+                            )}
+                            <div className={styles.grid}>
+                                {gameCharacters && gameCharacters.map(character => (
+                                    <Card key={character.id} className={styles.card}>
+                                        <CardContent>
+                                            <div className={styles.imageContainer}>
+                                                <Image
+                                                    priority
+                                                    src={character.imageUrl}
+                                                    blurDataURL={character.imageUrl}
+                                                    alt={`image_${character.id}`}
+                                                    className={styles.image}
+                                                    width={268}
+                                                    height={268}
+                                                />
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </div>
+                        </>
                     )}
                 </>
             )}
