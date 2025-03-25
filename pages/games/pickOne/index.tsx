@@ -20,7 +20,6 @@ const PickOne = () => {
     const localCharacters = useMemo(() => {
         return loadFromLocalStorage('characters') as Character[] || null;
     }, []);
-    // const [data, setData] = useState<Character[] | null>(localCharacters);
     const [gameCharacters, setGameCharacters] = useState<Character[] | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
