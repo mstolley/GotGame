@@ -3,7 +3,7 @@ import styles from '../../styles/GotGame.module.css';
 
 const Navigation = () => {
     return (
-        <div className={styles.headNav}>
+        <div className={styles.nav}>
             <Link href={"/"}>Back to Home</Link>
         </div>
     );

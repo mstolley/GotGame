@@ -57,7 +57,6 @@ const Character = () => {
                 <div className={styles.loader}>Loading...</div>
             ) : (
                 <>
-                    <Navigation />
                     {character && (
                         <Card className={styles.card}>
                             <CardContent>
@@ -90,6 +89,7 @@ const Character = () => {
                             </CardContent>
                         </Card>
                     )}
+                    <Navigation />
                 </>
             )}
         </Container>

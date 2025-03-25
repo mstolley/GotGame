@@ -56,12 +56,20 @@
     object-fit: cover;
 }
 
-.headNav,
+.nav,
 .selectContainer {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 20px;
+}
+
+.header {
+    margin-bottom: 20px;
+}
+
+.nav {
+    margin-top: 20px;
 }
 
 .gameDetails {

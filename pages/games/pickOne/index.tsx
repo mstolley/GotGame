@@ -63,7 +63,6 @@ const PickOne = () => {
                 <div className={styles.loader}>Loading...</div>
             ) : (
                 <>
-                    <Navigation />
                     {gameCharacters && gameCharacters.length > 3 && (
                         <>
                             {question && (
@@ -92,6 +91,7 @@ const PickOne = () => {
                             </div>
                         </>
                     )}
+                    <Navigation />
                 </>
             )}
         </Container>
