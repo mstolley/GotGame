@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
     Accordion,
     AccordionSummary,
@@ -27,7 +27,9 @@ const Home = () => {
         imageUrl: string;
     }
 
-    const localCharacters = loadFromLocalStorage('characters') as Character[] || null;
+    const localCharacters = useMemo(() => {
+        return loadFromLocalStorage('characters') as Character[] || null;
+    }, []);
 
     const [isClient, setIsClient] = useState(false);
     const [data, setData] = useState<Character[] | null>(localCharacters);

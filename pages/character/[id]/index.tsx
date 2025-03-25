@@ -2,10 +2,10 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Container, Typography, Card, CardContent } from '@mui/material';
 import Image from 'next/image';
-import Link from 'next/link';
 import { loadFromLocalStorage } from '../../../utils/localStorage';
 import styles from '../../../styles/GotGame.module.css';
 import { Header } from '../../../components/Header';
+import { Navigation } from '../../../components/Navigation';
 
 const Character = () => {
     const router = useRouter();
@@ -66,9 +66,7 @@ const Character = () => {
                 <div className={styles.loader}>Loading...</div>
             ) : (
                 <>
-                    <div className={styles.headNav}>
-                        <Link href={"/"}>Back to Home</Link>
-                    </div>
+                    <Navigation />
                     {character && (
                         <Card className={styles.card}>
                             <CardContent>

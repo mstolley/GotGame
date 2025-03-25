@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { Container, Typography, Card, CardContent } from '@mui/material';
+import { useEffect, useMemo, useState } from 'react';
+import { Container, Card, CardContent } from '@mui/material';
 import Image from 'next/image';
-import Link from 'next/link';
 import { loadFromLocalStorage } from '../../../utils/localStorage';
 import styles from '../../../styles/GotGame.module.css';
 import { Header } from '../../../components/Header';
+import { Navigation } from '../../../components/Navigation';
 
 const PickOne = () => {
     interface Character {
@@ -17,8 +17,9 @@ const PickOne = () => {
         imageUrl: string;
     }
 
-    const localCharacters = loadFromLocalStorage('characters') as Character[] || null;
-
+    const localCharacters = useMemo(() => {
+        return loadFromLocalStorage('characters') as Character[] || null;
+    }, []);
     // const [data, setData] = useState<Character[] | null>(localCharacters);
     const [gameCharacters, setGameCharacters] = useState<Character[] | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -45,7 +46,7 @@ const PickOne = () => {
         }
 
         setIsLoading(false);
-    }, []);
+    }, [localCharacters]);
 
     if (error) return <div>Error: {error.message}</div>;
 
@@ -56,9 +57,7 @@ const PickOne = () => {
                 <div className={styles.loader}>Loading...</div>
             ) : (
                 <>
-                    <div className={styles.headNav}>
-                        <Link href={"/"}>Back to Home</Link>
-                    </div>
+                    <Navigation />
                     {gameCharacters && gameCharacters.length > 3 && (
                         <div className={styles.grid}>
                             {gameCharacters && gameCharacters.map(character => (
