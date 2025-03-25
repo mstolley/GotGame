@@ -27,11 +27,11 @@ const Character = () => {
 
     useEffect(() => {
         if (id) {
-            const storedCharacters = loadFromLocalStorage('characters');
-            const storedCharacter = storedCharacters?.find((char: Character) => char.id === Number(id));
+            const localCharacters = loadFromLocalStorage('characters');
+            const localCharacter = localCharacters?.find((char: Character) => char.id === Number(id));
 
-            if (storedCharacter) {
-                setCharacter(storedCharacter);
+            if (localCharacter) {
+                setCharacter(localCharacter);
                 setIsLoading(false);
             } else {
                 const fetchCharacter = async () => {

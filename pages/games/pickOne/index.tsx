@@ -7,7 +7,7 @@ import styles from '../../../styles/GotGame.module.css';
 import { Header } from '../../../components/Header';
 
 const PickOne = () => {
-    interface PickOne {
+    interface Character {
         id: number;
         firstName: string;
         lastName: string;
@@ -17,18 +17,31 @@ const PickOne = () => {
         imageUrl: string;
     }
 
-    const [character, setCharacter] = useState<PickOne | null>(null);
+    const localCharacters = loadFromLocalStorage('characters') as Character[] || null;
+
+    // const [data, setData] = useState<Character[] | null>(localCharacters);
+    const [gameCharacters, setGameCharacters] = useState<Character[] | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
-        const storedCharacters = loadFromLocalStorage('characters');
-        const storedCharacter = storedCharacters?.find((char: PickOne) => char.id === Number(0));
+        if (localCharacters && localCharacters.length >= 4) {
+            // Shuffle the localCharacters array
+            const shuffledCharacters = localCharacters.sort(() => 0.5 - Math.random());
+            // Select the first 4 characters
+            const selectedCharacters = shuffledCharacters.slice(0, 4);
 
-        if (storedCharacter) {
-            setCharacter(storedCharacter);
+            // // Ensure one of the character values is unique
+            // if (selectedCharacters.length > 0) {
+            //     selectedCharacters[0] = {
+            //         ...selectedCharacters[0],
+            //         firstName: 'Arya' // Replace 'uniqueValue' with the actual unique value
+            //     };
+            // }
+
+            setGameCharacters(selectedCharacters);
         } else {
-            setError(new Error('Character not found'));
+            setError(new Error('Characters not found'));
         }
 
         setIsLoading(false);
@@ -46,37 +59,26 @@ const PickOne = () => {
                     <div className={styles.headNav}>
                         <Link href={"/"}>Back to Home</Link>
                     </div>
-                    {character && (
-                        <Card className={styles.card}>
-                            <CardContent>
-                                <Typography variant="h5" component="h5">
-                                    {character.fullName}
-                                </Typography>
-                                <Typography variant="body1">
-                                    <span>First Name:</span> {character.firstName}
-                                </Typography>
-                                <Typography variant="body1">
-                                    <span>Last Name:</span> {character.lastName}
-                                </Typography>
-                                <Typography variant="body1">
-                                    <span>Title:</span> {character.title}
-                                </Typography>
-                                <Typography variant="body1">
-                                    <span>Family:</span> {character.family}
-                                </Typography>
-                                <div className={styles.imageContainer}>
-                                    <Image
-                                        priority
-                                        src={character.imageUrl}
-                                        blurDataURL={character.imageUrl}
-                                        alt={`image_${character.id}`}
-                                        className={styles.image}
-                                        width={268}
-                                        height={268}
-                                    />
-                                </div>
-                            </CardContent>
-                        </Card>
+                    {gameCharacters && gameCharacters.length > 3 && (
+                        <div className={styles.grid}>
+                            {gameCharacters && gameCharacters.map(character => (
+                                <Card key={character.id} className={styles.card}>
+                                    <CardContent>
+                                        <div className={styles.imageContainer}>
+                                            <Image
+                                                priority
+                                                src={character.imageUrl}
+                                                blurDataURL={character.imageUrl}
+                                                alt={`image_${character.id}`}
+                                                className={styles.image}
+                                                width={268}
+                                                height={268}
+                                            />
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
                     )}
                 </>
             )}
