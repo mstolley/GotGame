@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Container, Card, CardContent } from '@mui/material';
 import Image from 'next/image';
 import { loadFromLocalStorage } from '../../../utils/localStorage';
+import { shuffleArray } from '../../../utils/shuffleArray';
 import styles from '../../../styles/GotGame.module.css';
 import { Header } from '../../../components/Header';
 import { Navigation } from '../../../components/Navigation';
@@ -26,9 +27,7 @@ const PickOne = () => {
 
     useEffect(() => {
         if (localCharacters && localCharacters.length >= 4) {
-            // Shuffle the localCharacters array
-            const shuffledCharacters = localCharacters.sort(() => 0.5 - Math.random());
-            // Select the first 4 characters
+            const shuffledCharacters = shuffleArray(localCharacters);
             const selectedCharacters = shuffledCharacters.slice(0, 4);
 
             // // Ensure one of the character values is unique
