@@ -14,6 +14,7 @@ const PickOne = () => {
         return loadFromLocalStorage('characters') as Character[] || null;
     }, []);
     const [gameCharacters, setGameCharacters] = useState<Character[] | null>(null);
+    const [winner, setWinner] = useState<Character | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
@@ -24,10 +25,10 @@ const PickOne = () => {
             const shuffledCharacters = shuffleArray(localCharacters);
             const selectedCharacters = shuffledCharacters.slice(0, 4);
             const randomKey = memoizedGetRandomKey(localCharacters[0]);
+            const winner = selectedCharacters?.find((char: Character) => char[randomKey] !== undefined && char[randomKey] !== null);
 
-            randomKey && console.log(randomKey);
-
-            setGameCharacters(selectedCharacters);
+            selectedCharacters.length === 4 && setGameCharacters(selectedCharacters);
+            winner && setWinner(winner);
         } else {
             setError(new Error('Characters not found'));
         }
@@ -38,6 +39,10 @@ const PickOne = () => {
     useEffect(() => {
         gameCharacters && console.log(gameCharacters);
     }, [gameCharacters]);
+
+    useEffect(() => {
+        winner && console.log(winner);
+    }, [winner]);
 
     if (error) return <div>Error: {error.message}</div>;
 

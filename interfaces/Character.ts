@@ -5,5 +5,7 @@ export interface Character {
     fullName: string;
     title: string;
     family: string;
+    image: string;
     imageUrl: string;
+    [key: string]: any;
 }
