@@ -38,13 +38,11 @@ const PickOne = () => {
             selectedCharacters && setGameCharacters(selectedCharacters);
             winner && setWinner(winner);
 
-            if (legibleKey && winnerValue) {
-                question = winnerValue !== null && winnerValue !== 'None'
-                    ? `Which character has a ${legibleKey} of ${winnerValue}?`
-                    : `Which character has no ${legibleKey}?`;
+            question = winnerValue !== null && winnerValue !== 'None'
+                ? `Which character has a ${legibleKey} of ${winnerValue}?`
+                : `Which character has no ${legibleKey}?`;
 
-                setQuestion(question);
-            }
+            setQuestion(question);
         } else {
             setError(new Error('Characters not found'));
         }
