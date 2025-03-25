@@ -12,11 +12,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    width: 100vw;
+    height: calc(100vh - 60px);
+    width: calc(100vw - 60px);
     background-color: #666;
     opacity: 1;
-    animation: fadeIn .25s backwards;
+    animation: fadeIn .25s forwards;
 }
 
 .container {
@@ -61,5 +61,13 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.gameDetails {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
     margin-bottom: 20px;
 }

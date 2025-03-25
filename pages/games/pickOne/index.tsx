@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Container, Typography, Card, CardContent } from '@mui/material';
 import Image from 'next/image';
@@ -7,11 +6,8 @@ import { loadFromLocalStorage } from '../../../utils/localStorage';
 import styles from '../../../styles/GotGame.module.css';
 import { Header } from '../../../components/Header';
 
-const Character = () => {
-    const router = useRouter();
-    const { id } = router.query;
-
-    interface Character {
+const PickOne = () => {
+    interface PickOne {
         id: number;
         firstName: string;
         lastName: string;
@@ -21,41 +17,22 @@ const Character = () => {
         imageUrl: string;
     }
 
-    const [character, setCharacter] = useState<Character | null>(null);
+    const [character, setCharacter] = useState<PickOne | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
     useEffect(() => {
-        if (id) {
-            const storedCharacters = loadFromLocalStorage('characters');
-            const storedCharacter = storedCharacters?.find((char: Character) => char.id === Number(id));
+        const storedCharacters = loadFromLocalStorage('characters');
+        const storedCharacter = storedCharacters?.find((char: PickOne) => char.id === Number(0));
 
-            if (storedCharacter) {
-                setCharacter(storedCharacter);
-                setIsLoading(false);
-            } else {
-                const fetchCharacter = async () => {
-                    try {
-                        const response = await fetch(`/api/character/${id}`);
-
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-
-                        const result = await response.json();
-
-                        setCharacter(result);
-                    } catch (error) {
-                        setError(error as Error);
-                    } finally {
-                        setIsLoading(false);
-                    }
-                };
-
-                fetchCharacter();
-            }
+        if (storedCharacter) {
+            setCharacter(storedCharacter);
+        } else {
+            setError(new Error('Character not found'));
         }
-    }, [id]);
+
+        setIsLoading(false);
+    }, []);
 
     if (error) return <div>Error: {error.message}</div>;
 
@@ -107,4 +84,4 @@ const Character = () => {
     );
 };
 
-export default Character;
+export default PickOne;

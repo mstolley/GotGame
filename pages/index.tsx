@@ -1,8 +1,19 @@
 import { useState, useEffect } from 'react';
-import { Container, Card, CardContent } from '@mui/material';
+import {
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Container,
+    Card,
+    CardContent,
+    NoSsr,
+    Typography
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Image from 'next/image';
 import Link from 'next/link';
 import { loadFromLocalStorage, saveToLocalStorage } from '../utils/localStorage';
+import { Header } from '../components/Header';
 import styles from '../styles/GotGame.module.css';
 
 const Home = () => {
@@ -61,49 +72,75 @@ const Home = () => {
 
     return (
         <Container className={styles.container}>
+            <Header />
             {!isClient || isLoading ? (
                 <div className={styles.loader}>Loading...</div>
             ) : (
                 <>
-                    <div className={styles.selectContainer}>
-                        <select value={selectedFamily} name='family' id='family' onChange={handleFamilyChange}>
-                            <option value="">All Families</option>
-                            {data && Array.from(new Set(data.map(character => character.family)))
-                                .filter(family => family.trim() !== '') // Filter out empty values
-                                .sort((a, b) => a.localeCompare(b)) // Sort alphabetically
-                                .map(family => (
-                                    <option key={family} value={family}>{family}</option>
-                                ))}
-                        </select>
-                    </div>
-                    <div>
-                        {filteredData && filteredData.length > 0 && (
-                            <div className={styles.grid}>
-                                {filteredData.map((character) => (
-                                    <Card
-                                        key={`card_${character.id}`}
-                                        className={styles.card}
-                                    >
-                                        <CardContent>
-                                            <Link href={`/character/${character.id}`}>
-                                                <div className={styles.imageContainer}>
-                                                    <Image
-                                                        priority
-                                                        src={character.imageUrl}
-                                                        blurDataURL={character.imageUrl}
-                                                        alt={`image_${character.id}`}
-                                                        className={styles.image}
-                                                        width={268}
-                                                        height={268}
-                                                    />
-                                                </div>
-                                            </Link>
-                                        </CardContent>
-                                    </Card>
-                                ))}
+                    <Accordion>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="characters-content"
+                            id="characters-header"
+                        >
+                            <Typography variant="h5" component="h5">Characters</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <div className={styles.selectContainer}>
+                                <select value={selectedFamily} name='family' id='family' onChange={handleFamilyChange}>
+                                    <option value="">All Families</option>
+                                    {data && Array.from(new Set(data.map(character => character.family)))
+                                        .filter(family => family.trim() !== '') // Filter out empty values
+                                        .sort((a, b) => a.localeCompare(b)) // Sort alphabetically
+                                        .map(family => (
+                                            <option key={family} value={family}>{family}</option>
+                                        ))}
+                                </select>
                             </div>
-                        )}
-                    </div>
+                            <div>
+                                {filteredData && filteredData.length > 0 && (
+                                    <div className={styles.grid}>
+                                        {filteredData.map((character) => (
+                                            <Card
+                                                key={`card_${character.id}`}
+                                                className={styles.card}
+                                            >
+                                                <CardContent>
+                                                    <Link href={`/character/${character.id}`}>
+                                                        <div className={styles.imageContainer}>
+                                                            <Image
+                                                                priority
+                                                                src={character.imageUrl}
+                                                                blurDataURL={character.imageUrl}
+                                                                alt={`image_${character.id}`}
+                                                                className={styles.image}
+                                                                width={268}
+                                                                height={268}
+                                                            />
+                                                        </div>
+                                                    </Link>
+                                                </CardContent>
+                                            </Card>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </AccordionDetails>
+                    </Accordion>
+                    <Accordion>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="games-content"
+                            id="games-header"
+                        >
+                            <Typography variant="h5" component="h5">Games</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <div className={styles.gameDetails}>
+                                <Link href={'/games/pickOne'}>Pick 1 Game</Link>
+                            </div>
+                        </AccordionDetails>
+                    </Accordion>
                 </>
             )}
         </Container>
