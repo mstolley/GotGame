@@ -6,24 +6,22 @@ import { loadFromLocalStorage, saveToLocalStorage } from '../utils/localStorage'
 import { shuffleArray } from '../utils/shuffleArray';
 import { getRandomKey } from '../utils/getRandomKey';
 import { Header } from '../components/Header';
-import { Navigation } from '../components/Navigation';
 import styles from '../styles/GotGame.module.css';
 import { getLegibleKey } from '../utils/getLegibleKey';
 
 const GotGame = () => {
-    const localCharacters = useMemo(() => {
-        return loadFromLocalStorage('characters') as Character[] || null;
-    }, []);
+    const [localCharacters, setLocalCharacters] = useState<Character[] | null>(loadFromLocalStorage('characters'));
     const [gameCharacters, setGameCharacters] = useState<Character[] | null>(null);
     const [winner, setWinner] = useState<Character | null>(null);
     const [question, setQuestion] = useState<string | null>(null);
-    const [showLaunchButton, setShowLaunchButton] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
     const memoizedGetRandomKey = useCallback((getRandomKey), []);
 
     const fetchData = async () => {
+        setIsLoading(true);
+
         try {
             const response = await fetch('/api');
 
@@ -34,6 +32,7 @@ const GotGame = () => {
             const result = await response.json();
 
             saveToLocalStorage('characters', result);
+            setLocalCharacters(result); // Update localCharacters after saving to local storage
         } catch (error) {
             setError(error as Error);
         } finally {
@@ -42,38 +41,33 @@ const GotGame = () => {
     };
 
     const launchRound = useCallback(() => {
-        console.log('launchRound');
-        setIsLoading(true);
-
         if (localCharacters && localCharacters.length >= 4) {
             const shuffledCharacters = shuffleArray(localCharacters);
             const selectedCharacters = shuffledCharacters?.slice(0, 4);
             const randomKey = memoizedGetRandomKey(localCharacters[0]);
             const legibleKey = getLegibleKey(randomKey);
             const winner = selectedCharacters?.find((char: Character) => char[randomKey] !== undefined && char[randomKey] !== null);
-            const winnerValue = winner ? winner[randomKey] : null;
-
-            let question = null;
-
-            selectedCharacters && setGameCharacters(selectedCharacters);
-            winner && setWinner(winner);
-
-            question = winnerValue !== null && winnerValue !== 'None'
-                ? `Which character has a ${legibleKey} of ${winnerValue}?`
+            const question = winner
+                ? `Which character has a ${legibleKey} of ${winner[randomKey]}?`
                 : `Which character has no ${legibleKey}?`;
 
+            setGameCharacters(selectedCharacters);
+            setWinner(winner || null);
             setQuestion(question);
         } else {
-            // localCharacters === null ? fetchData() : setError(new Error('Characters not found'));
-            fetchData();
+            setError(new Error('Not enough characters to start the game.'));
         }
 
         setIsLoading(false);
     }, [localCharacters, memoizedGetRandomKey]);
 
     useEffect(() => {
-        launchRound();
-    }, [launchRound]);
+        localCharacters === null ? fetchData() : setIsLoading(false);
+    }, [localCharacters]);
+
+    useEffect(() => {
+        console.log('localCharacters: ', localCharacters);
+    }, [localCharacters]);
 
     useEffect(() => {
         winner && console.log(winner);
@@ -88,11 +82,9 @@ const GotGame = () => {
                 <div className={styles.loader}>Loading...</div>
             ) : (
                 <>
-                    {showLaunchButton && (
-                        <div className={styles.buttonContainer}>
-                            <Button className={styles.button} onClick={launchRound}>Start</Button>
-                        </div>
-                    )}
+                    <div className={styles.buttonContainer}>
+                        <Button className={styles.button} onClick={launchRound}>Start</Button>
+                    </div>
                     {gameCharacters && gameCharacters.length > 3 && (
                         <>
                             {question && (
