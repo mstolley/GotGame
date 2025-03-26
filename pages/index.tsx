@@ -14,6 +14,8 @@ const GotGame = () => {
     const [gameCharacters, setGameCharacters] = useState<Character[] | null>(null);
     const [winner, setWinner] = useState<Character | null>(null);
     const [question, setQuestion] = useState<string | null>(null);
+    const [wins, setWins] = useState(0);
+    const [isLoss, setIsLoss] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
@@ -32,7 +34,7 @@ const GotGame = () => {
             const result = await response.json();
 
             saveToLocalStorage('characters', result);
-            setLocalCharacters(result); // Update localCharacters after saving to local storage
+            setLocalCharacters(result);
         } catch (error) {
             setError(error as Error);
         } finally {
@@ -61,12 +63,18 @@ const GotGame = () => {
         setIsLoading(false);
     }, [localCharacters, memoizedGetRandomKey]);
 
-    useEffect(() => {
-        localCharacters === null ? fetchData() : setIsLoading(false);
-    }, [localCharacters]);
+    const resetGame = () => {
+        setIsLoss(false);
+        setGameCharacters(null);
+        setWinner(null);
+        setQuestion(null);
+        setWins(0);
+
+        launchRound();
+    };
 
     useEffect(() => {
-        console.log('localCharacters: ', localCharacters);
+        localCharacters === null ? fetchData() : setIsLoading(false);
     }, [localCharacters]);
 
     useEffect(() => {
@@ -82,10 +90,26 @@ const GotGame = () => {
                 <div className={styles.loader}>Loading...</div>
             ) : (
                 <>
-                    <div className={styles.buttonContainer}>
-                        <Button className={styles.button} onClick={launchRound}>Start</Button>
-                    </div>
-                    {gameCharacters && gameCharacters.length > 3 && (
+                    {!isLoss && (
+                        <div className={styles.buttonContainer}>
+                            <Button className={styles.button} onClick={launchRound}>Start</Button>
+                        </div>
+                    )}
+                    {gameCharacters && (
+                        <div className={styles.scoreContainer}>
+                            <div className={styles.wins}>
+                                <span className={styles.scoreKey}>Wins</span>
+                                <span className={styles.scoreValue}>{wins}</span>
+                            </div>
+                        </div>
+                    )}
+                    {isLoss && (
+                        <div className={styles.lostContainer}>
+                            <Typography className={styles.lostText} component='h5' variant='h5'>You lost!</Typography>
+                            <Button className={styles.button} onClick={() => resetGame()}>Try again</Button>
+                        </div>
+                    )}
+                    {gameCharacters && gameCharacters.length > 3 && !isLoss && (
                         <>
                             {question && (
                                 <div className={styles.question}>
@@ -96,7 +120,7 @@ const GotGame = () => {
                                 {gameCharacters && gameCharacters.map(character => (
                                     <Card key={character.id} className={styles.card}>
                                         <CardContent>
-                                            <div className={styles.imageContainer}>
+                                            <div className={styles.imageContainer} onClick={() => character === winner ? setWins(wins + 1) : setIsLoss(true)}>
                                                 <Image
                                                     priority
                                                     src={character.imageUrl}

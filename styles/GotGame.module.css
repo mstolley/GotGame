@@ -56,31 +56,55 @@
     object-fit: cover;
 }
 
-.nav,
-.selectContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 20px;
-}
-
-.header {
-    margin-bottom: 20px;
-}
-
-.nav {
-    margin-top: 20px;
-}
-
 .gameDetails {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
-    margin-bottom: 20px;
 }
 
 .buttonContainer,
-.question {
+.gameDetails,
+.header,
+.question,
+.scoreContainer {
     margin-bottom: 20px;
+}
+
+.scoreContainer {
+    display: flex;
+    justify-content: space-between;
+    /* Push items to the edges */
+    align-items: center;
+    /* Align items vertically in the center */
+    padding: 10px;
+    border: 1px solid #ccc;
+    /* Optional: Add a border for clarity */
+    margin: 10px 0;
+    /* Optional: Add spacing around the container */
+}
+
+.wins {
+    flex: 0;
+    text-align: left;
+}
+
+.scoreKey {
+    margin-right: 10px;
+}
+
+.scoreValue {
+    font-weight: bold;
+}
+
+.wins .scoreValue {
+    color: green;
+}
+
+.lostContainer {
+    margin-top: 40px;
+}
+
+.lostText {
+    color: red;
 }
