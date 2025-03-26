@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Container, Card, CardContent, Typography, Button } from '@mui/material';
 import Image from 'next/image';
 import { Character } from '../interfaces/Character';
@@ -16,8 +16,11 @@ const GotGame = () => {
     const [question, setQuestion] = useState<string | null>(null);
     const [wins, setWins] = useState(0);
     const [isLoss, setIsLoss] = useState(false);
+    const [isSelected, setIsSelected] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
+
+    const prevWinsRef = useRef<number>(wins); // Initialize with the current wins value
 
     const memoizedGetRandomKey = useCallback((getRandomKey), []);
 
@@ -49,8 +52,8 @@ const GotGame = () => {
             const randomKey = memoizedGetRandomKey(localCharacters[0]);
             const legibleKey = getLegibleKey(randomKey);
             const winner = selectedCharacters?.find((char: Character) => char[randomKey] !== undefined && char[randomKey] !== null);
-            const question = winner
-                ? `Which character has a ${legibleKey} of ${winner[randomKey]}?`
+            const question = winner?.[randomKey]?.length > 0
+                ? `Which character has a ${legibleKey} of ${winner?.[randomKey]}?`
                 : `Which character has no ${legibleKey}?`;
 
             setGameCharacters(selectedCharacters);
@@ -81,6 +84,11 @@ const GotGame = () => {
         winner && console.log(winner);
     }, [winner]);
 
+    useEffect(() => {
+        prevWinsRef.current !== wins && launchRound();
+        prevWinsRef.current = wins;
+    }, [wins]);
+
     if (error) return <div>Error: {error.message}</div>;
 
     return (
@@ -90,12 +98,11 @@ const GotGame = () => {
                 <div className={styles.loader}>Loading...</div>
             ) : (
                 <>
-                    {!isLoss && (
+                    {!gameCharacters ? (
                         <div className={styles.buttonContainer}>
                             <Button className={styles.button} onClick={launchRound}>Start</Button>
                         </div>
-                    )}
-                    {gameCharacters && (
+                    ) : (
                         <div className={styles.scoreContainer}>
                             <div className={styles.wins}>
                                 <span className={styles.scoreKey}>Wins</span>
@@ -104,12 +111,16 @@ const GotGame = () => {
                         </div>
                     )}
                     {isLoss && (
-                        <div className={styles.lostContainer}>
-                            <Typography className={styles.lostText} component='h5' variant='h5'>You lost!</Typography>
-                            <Button className={styles.button} onClick={() => resetGame()}>Try again</Button>
-                        </div>
+                        <>
+                            <div className={styles.lostContainer}>
+                                <Typography className={styles.lostText} component='h5' variant='h5'>You lost!</Typography>
+                            </div>
+                            <div className={styles.buttonContainer}>
+                                <Button className={styles.button} onClick={resetGame}>Play again</Button>
+                            </div>
+                        </>
                     )}
-                    {gameCharacters && gameCharacters.length > 3 && !isLoss && (
+                    {gameCharacters && !isLoss && (
                         <>
                             {question && (
                                 <div className={styles.question}>
