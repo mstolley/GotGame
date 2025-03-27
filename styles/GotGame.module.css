@@ -40,6 +40,8 @@
     background-color: #f0f0f0 !important;
     opacity: 0;
     animation: fadeIn .25s forwards;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .3);
 }
 
 .imageContainer {
