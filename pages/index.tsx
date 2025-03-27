@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Container, Card, CardContent, Typography, Button } from '@mui/material';
 import Image from 'next/image';
 import { Character } from '../interfaces/Character';
 import { loadFromLocalStorage, saveToLocalStorage } from '../utils/localStorage';
@@ -91,7 +90,7 @@ const GotGame = () => {
     if (error) return <div>Error: {error.message}</div>;
 
     return (
-        <Container className={styles.container}>
+        <div className={styles.container}>
             <Header />
             {isLoading ? (
                 <div className={styles.loader}>Loading...</div>
@@ -99,7 +98,7 @@ const GotGame = () => {
                 <>
                     {!gameCharacters ? (
                         <div className={styles.buttonContainer}>
-                            <Button className={styles.button} onClick={launchRound}>Start</Button>
+                            <button className={styles.button} onClick={launchRound}>Start</button>
                         </div>
                     ) : (
                         <div className={styles.scoreContainer}>
@@ -112,10 +111,10 @@ const GotGame = () => {
                     {isLoss && (
                         <>
                             <div className={styles.lostContainer}>
-                                <Typography className={styles.lostText} component='h5' variant='h5'>You lost!</Typography>
+                                <h5 className={styles.lostText}>You lost!</h5>
                             </div>
                             <div className={styles.buttonContainer}>
-                                <Button className={styles.button} onClick={resetGame}>Play again</Button>
+                                <button className={styles.button} onClick={resetGame}>Play again</button>
                             </div>
                         </>
                     )}
@@ -123,13 +122,13 @@ const GotGame = () => {
                         <>
                             {question && (
                                 <div className={styles.question}>
-                                    <Typography component='h5' variant='h5'>{question}</Typography>
+                                    <h5 className="text-3xl font-bold underline">{question}</h5>
                                 </div>
                             )}
                             <div className={styles.grid}>
                                 {gameCharacters && gameCharacters.map(character => (
-                                    <Card key={character.id} className={styles.card}>
-                                        <CardContent>
+                                    <div key={character.id} className={styles.card}>
+                                        <div>
                                             <div className={styles.imageContainer} onClick={() => character === winner ? setWins(wins + 1) : setIsLoss(true)}>
                                                 <Image
                                                     priority
@@ -141,15 +140,15 @@ const GotGame = () => {
                                                     height={268}
                                                 />
                                             </div>
-                                        </CardContent>
-                                    </Card>
+                                        </div>
+                                    </div>
                                 ))}
                             </div>
                         </>
                     )}
                 </>
             )}
-        </Container>
+        </div>
     );
 };
 
