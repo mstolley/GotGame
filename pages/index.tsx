@@ -54,7 +54,9 @@ const GotGame = () => {
                 ? `Which character has a ${legibleKey} of ${winner?.[randomKey]}?`
                 : `Which character has no ${legibleKey}?`;
 
-            setGameCharacters(selectedCharacters);
+            const shuffledSelectedCharacters = shuffleArray(selectedCharacters);
+
+            setGameCharacters(shuffledSelectedCharacters);
             setWinner(winner || null);
             setQuestion(question);
         } else {
@@ -64,7 +66,7 @@ const GotGame = () => {
         setIsLoading(false);
     }, [localCharacters, memoizedGetRandomKey]);
 
-    const resetGame = () => {
+    const resetGame = useCallback(() => {
         setIsLoss(false);
         setGameCharacters(null);
         setWinner(null);
@@ -72,7 +74,7 @@ const GotGame = () => {
         setWins(0);
 
         launchRound();
-    };
+    }, [launchRound]);
 
     useEffect(() => {
         localCharacters === null ? fetchData() : setIsLoading(false);
@@ -85,7 +87,7 @@ const GotGame = () => {
     useEffect(() => {
         prevWinsRef.current !== wins && launchRound();
         prevWinsRef.current = wins;
-    }, [wins]);
+    }, [wins, launchRound]);
 
     if (error) return <div>Error: {error.message}</div>;
 
