@@ -125,10 +125,10 @@ const GotGame = () => {
                                     <h5 className="text-3xl font-bold underline">{question}</h5>
                                 </div>
                             )}
-                            <div className={styles.grid}>
-                                {gameCharacters && gameCharacters.map(character => (
-                                    <div key={character.id} className={styles.card}>
-                                        <div>
+                            {gameCharacters && (
+                                <div className={styles.grid}>
+                                    {gameCharacters.map(character => (
+                                        <div key={character.id} className={styles.card}>
                                             <div className={styles.imageContainer} onClick={() => character === winner ? setWins(wins + 1) : setIsLoss(true)}>
                                                 <Image
                                                     priority
@@ -141,9 +141,9 @@ const GotGame = () => {
                                                 />
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
+                                    ))}
+                                </div>
+                            )}
                         </>
                     )}
                 </>
