@@ -16,7 +16,6 @@ const GotGame = () => {
     const [question, setQuestion] = useState<string | null>(null);
     const [wins, setWins] = useState(0);
     const [isLoss, setIsLoss] = useState(false);
-    const [isSelected, setIsSelected] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
