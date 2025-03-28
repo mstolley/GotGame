@@ -92,7 +92,8 @@
     border-radius: 5px;
 }
 
-.cheatMode:hover {
+.cheatMode:hover,
+.cheatModeLabel:hover {
     cursor: pointer;
 }
 

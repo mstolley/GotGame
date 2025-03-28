@@ -125,7 +125,7 @@ const GotGame = () => {
                                     checked={isCheatMode}
                                     onChange={() => setIsCheatMode(!isCheatMode)}
                                 />
-                                <label className={styles.cheatModeLabel}>Cheat Mode</label>
+                                <label className={styles.cheatModeLabel} htmlFor="cheatMode">Cheat Mode</label>
                             </div>
                         </div>
                     ) : (
