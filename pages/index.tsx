@@ -111,6 +111,7 @@ const GotGame = () => {
                             <button className={styles.button} onClick={launchRound}>Start</button>
                             <div className={styles.cheatModeContainer}>
                                 <input
+                                    className={styles.cheatMode}
                                     id="cheatMode"
                                     name="cheatMode"
                                     aria-label="Cheat Mode"
@@ -120,7 +121,6 @@ const GotGame = () => {
                                     aria-required="false"
                                     aria-labelledby="cheatMode"
                                     aria-live="polite"
-                                    className={styles.cheatMode}
                                     type="checkbox"
                                     checked={isCheatMode}
                                     onChange={() => setIsCheatMode(!isCheatMode)}

@@ -92,6 +92,10 @@
     border-radius: 5px;
 }
 
+.cheatMode:hover {
+    cursor: pointer;
+}
+
 .button {
     padding: 10px 20px;
     background-color: #007bff;
