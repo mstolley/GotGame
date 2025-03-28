@@ -9,6 +9,7 @@ import styles from '../styles/GotGame.module.css';
 import { getLegibleKey } from '../utils/getLegibleKey';
 
 const GotGame = () => {
+    const [isCheatMode, setIsCheatMode] = useState(false);
     const [localHighScore, setLocalHighScore] = useState<number | null>(loadFromLocalStorage('highScore'));
     const [localCharacters, setLocalCharacters] = useState<Character[] | null>(loadFromLocalStorage('characters'));
     const [gameCharacters, setGameCharacters] = useState<Character[] | null>(null);
@@ -88,8 +89,8 @@ const GotGame = () => {
     }, [localCharacters]);
 
     useEffect(() => {
-        winner && console.log(winner);
-    }, [winner]);
+        isCheatMode && winner && console.log(winner);
+    }, [isCheatMode, winner]);
 
     useEffect(() => {
         prevWinsRef.current !== wins && launchRound();
@@ -106,8 +107,26 @@ const GotGame = () => {
             ) : (
                 <>
                     {!gameCharacters ? (
-                        <div className={styles.buttonContainer}>
+                        <div className={styles.startContainer}>
                             <button className={styles.button} onClick={launchRound}>Start</button>
+                            <div className={styles.cheatModeContainer}>
+                                <input
+                                    id="cheatMode"
+                                    name="cheatMode"
+                                    aria-label="Cheat Mode"
+                                    aria-describedby="cheatMode"
+                                    aria-checked={isCheatMode}
+                                    aria-invalid={isCheatMode ? 'true' : 'false'}
+                                    aria-required="false"
+                                    aria-labelledby="cheatMode"
+                                    aria-live="polite"
+                                    className={styles.cheatMode}
+                                    type="checkbox"
+                                    checked={isCheatMode}
+                                    onChange={() => setIsCheatMode(!isCheatMode)}
+                                />
+                                <label className={styles.cheatModeLabel}>Cheat Mode</label>
+                            </div>
                         </div>
                     ) : (
                         <div className={styles.scoreContainer}>
