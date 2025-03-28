@@ -9,6 +9,7 @@ import styles from '../styles/GotGame.module.css';
 import { getLegibleKey } from '../utils/getLegibleKey';
 
 const GotGame = () => {
+    const [localHighScore, setLocalHighScore] = useState<number | null>(loadFromLocalStorage('highScore'));
     const [localCharacters, setLocalCharacters] = useState<Character[] | null>(loadFromLocalStorage('characters'));
     const [gameCharacters, setGameCharacters] = useState<Character[] | null>(null);
     const [winner, setWinner] = useState<Character | null>(null);
@@ -67,6 +68,12 @@ const GotGame = () => {
     }, [localCharacters, memoizedGetRandomKey]);
 
     const resetGame = useCallback(() => {
+        const isNewHighScore = wins > (localHighScore || 0);
+        const scoreToSet = isNewHighScore ? wins : localHighScore;
+
+        setLocalHighScore(scoreToSet);
+        saveToLocalStorage('highScore', scoreToSet);
+
         setIsLoss(false);
         setGameCharacters(null);
         setWinner(null);
@@ -74,7 +81,7 @@ const GotGame = () => {
         setWins(0);
 
         launchRound();
-    }, [launchRound]);
+    }, [launchRound, wins, localHighScore]);
 
     useEffect(() => {
         localCharacters === null ? fetchData() : setIsLoading(false);
@@ -107,6 +114,10 @@ const GotGame = () => {
                             <div className={styles.wins}>
                                 <span className={styles.scoreKey}>Wins</span>
                                 <span className={styles.scoreValue}>{wins}</span>
+                            </div>
+                            <div className={styles.high}>
+                                <span className={styles.scoreKey}>High</span>
+                                <span className={styles.scoreValue}>{localHighScore}</span>
                             </div>
                         </div>
                     )}

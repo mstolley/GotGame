@@ -84,7 +84,8 @@
     border-radius: 20px;
 }
 
-.wins {
+.win,
+.highs {
     flex: 0;
     text-align: left;
 }
@@ -99,6 +100,10 @@
 
 .wins .scoreValue {
     color: green;
+}
+
+.high .scoreValue {
+    color: blue;
 }
 
 .lostContainer {
